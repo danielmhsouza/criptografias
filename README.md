@@ -5,6 +5,6 @@ Exercícios de criptografia
 
 <p>Abrir terminal no diretório do projeto</p>
 
-'''
-lua main.lua
-'''
+```
+    lua main.lua
+```
