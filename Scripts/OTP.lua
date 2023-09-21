@@ -21,34 +21,42 @@ end
 function OTP:encrypt(value, pass)
     local lastPosValue = #value
     local lastPosPass = #pass
-    local res = 0
     local newBinary = {}
 
-    -- adiciona 0 no começo do menor valor
-    if lastPosValue < lastPosPass then
-        for i = 1, lastPosPass - lastPosValue, 1 do
-            table.insert(value, 1, '0')
-        end
-    elseif lastPosValue > lastPosPass then
-        for i = 1, lastPosValue - lastPosPass, 1 do
-            table.insert(pass, 1, '0')
-        end
+    if lastPosPass ~= lastPosValue then
+        print("\a\tERRO:::DIGITE VALORES COM A MESMA QUANTIDADE DE CARACTERES!")
+        return false
     end
 
     for i = lastPosValue, 1, -1 do
-        res = self:xor(value[i], pass[i])
+        local res = self:xor(value[i], pass[i])
         table.insert(newBinary, 1, res)
     end
 
-    return newBinary
+    local concatRes = table.concat(newBinary, "")
+    return tonumber(concatRes, 2), newBinary
+end
+
+function OTP:descrypt(value)
+    local lastPosValue = #value
+    local lastPosPass = #self.password
+    local newBinary = {}
+
+    for i = lastPosValue, 1, -1 do
+        local res = self:xor(value[i], self.password[i])
+        table.insert(newBinary, 1, res)
+    end
+
+    local concatRes = table.concat(newBinary, "")
+    return tonumber(concatRes, 2)
 end
 
 function OTP:xor(a, b)
-    if (a == '0' and b == '0') or (a == '1' and b == '1') then
-        return "0"
+    if a == b then
+        return 0
     end
 
-    return "1"
+    return 1
 end
 
 return OTP
